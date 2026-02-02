@@ -13,18 +13,18 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f5f5dc 0%, #d2b48c 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            color: white;
+            color: #333;
             overflow-x: hidden;
         }
 
         .game-header {
             text-align: center;
             padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
         }
 
@@ -43,20 +43,23 @@
         }
 
         .info-item {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
             padding: 10px 20px;
             border-radius: 25px;
             font-size: 1.1em;
+            border: 1px solid rgba(0, 0, 0, 0.2);
         }
 
         .game-setup {
             text-align: center;
             padding: 50px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.9);
             margin: 50px auto;
             max-width: 500px;
             border-radius: 20px;
             backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(0, 0, 0, 0.1);
         }
 
         .setup-title {
@@ -120,17 +123,20 @@
         }
 
         .player-area {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 15px;
             padding: 15px;
             backdrop-filter: blur(5px);
             transition: all 0.3s;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .player-area.active {
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
             transform: scale(1.05);
+            border-color: #ffcc00;
         }
 
         .player-name {
@@ -184,11 +190,13 @@
         }
 
         .current-player-hand {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 20px;
             padding: 20px;
             backdrop-filter: blur(10px);
             margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(0, 0, 0, 0.1);
         }
 
         .hand-title {
@@ -228,14 +236,15 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
         }
 
-        .card.red { background: linear-gradient(135deg, #ff4757, #ff6348); color: white; }
-        .card.blue { background: linear-gradient(135deg, #3498db, #2980b9); color: white; }
-        .card.green { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; }
-        .card.yellow { background: linear-gradient(135deg, #f1c40f, #f39c12); color: white; }
+        .card.red { background: linear-gradient(135deg, #ff0000, #cc0000); color: white; border-color: #ff0000; }
+        .card.blue { background: linear-gradient(135deg, #0066ff, #0044cc); color: white; border-color: #0066ff; }
+        .card.green { background: linear-gradient(135deg, #00cc00, #009900); color: white; border-color: #00cc00; }
+        .card.yellow { background: linear-gradient(135deg, #ffcc00, #ff9900); color: #333; border-color: #ffcc00; }
         .card.wild { 
-            background: linear-gradient(135deg, #ff4757 25%, #3498db 25% 50%, #2ecc71 50% 75%, #f1c40f 75%); 
+            background: linear-gradient(135deg, #ff0000 25%, #0066ff 25% 50%, #00cc00 50% 75%, #ffcc00 75%); 
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            border-color: #333;
         }
 
         .card-number {
@@ -331,10 +340,10 @@
             transform: scale(1.1);
         }
 
-        .color-option.red { background: linear-gradient(135deg, #ff4757, #ff6348); }
-        .color-option.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
-        .color-option.green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-        .color-option.yellow { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+        .color-option.red { background: linear-gradient(135deg, #ff0000, #cc0000); }
+        .color-option.blue { background: linear-gradient(135deg, #0066ff, #0044cc); }
+        .color-option.green { background: linear-gradient(135deg, #00cc00, #009900); }
+        .color-option.yellow { background: linear-gradient(135deg, #ffcc00, #ff9900); }
 
         .current-color-indicator {
             position: absolute;
@@ -717,11 +726,11 @@
 
             getColorGradient(color) {
                 const gradients = {
-                    'red': 'linear-gradient(135deg, #ff4757, #ff6348)',
-                    'blue': 'linear-gradient(135deg, #3498db, #2980b9)',
-                    'green': 'linear-gradient(135deg, #2ecc71, #27ae60)',
-                    'yellow': 'linear-gradient(135deg, #f1c40f, #f39c12)',
-                    'wild': 'linear-gradient(135deg, #ff4757 25%, #3498db 25% 50%, #2ecc71 50% 75%, #f1c40f 75%)'
+                    'red': 'linear-gradient(135deg, #ff0000, #cc0000)',
+                    'blue': 'linear-gradient(135deg, #0066ff, #0044cc)',
+                    'green': 'linear-gradient(135deg, #00cc00, #009900)',
+                    'yellow': 'linear-gradient(135deg, #ffcc00, #ff9900)',
+                    'wild': 'linear-gradient(135deg, #ff0000 25%, #0066ff 25% 50%, #00cc00 50% 75%, #ffcc00 75%)'
                 };
                 return gradients[color] || gradients['wild'];
             }
