@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNO Game - Multiplayer</title>
+    <title>World Clock - Time Across the Globe</title>
     <style>
         * {
             margin: 0;
@@ -12,960 +12,675 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f5f5dc 0%, #d2b48c 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #fda085 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            color: #333;
-            overflow-x: hidden;
-        }
-
-        .game-header {
-            text-align: center;
+            align-items: center;
             padding: 20px;
-            background: rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            color: white;
+            overflow-x: hidden;
+            animation: gradientShift 15s ease infinite;
+            background-size: 400% 400%;
         }
 
-        .game-title {
-            font-size: 2.5em;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin-bottom: 10px;
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .game-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 10px;
-        }
-
-        .info-item {
-            background: rgba(0, 0, 0, 0.1);
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 1.1em;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-        }
-
-        .game-setup {
+        .header {
             text-align: center;
-            padding: 50px;
-            background: rgba(255, 255, 255, 0.9);
-            margin: 50px auto;
-            max-width: 500px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            border: 2px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
         }
 
-        .setup-title {
-            font-size: 1.8em;
-            margin-bottom: 30px;
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .player-select {
-            margin-bottom: 30px;
+        h1 {
+            font-size: 3.5em;
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
         }
 
-        .player-select label {
+        .subtitle {
             font-size: 1.2em;
-            margin-right: 15px;
+            opacity: 0.9;
+            font-weight: 300;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        .player-select select {
-            padding: 10px 20px;
-            font-size: 1.1em;
-            border-radius: 10px;
+        .clock-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .clock-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out;
+            animation-fill-mode: both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clock-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .clock-card:hover::before {
+            animation: shimmer 0.6s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .clock-card:nth-child(1) { animation-delay: 0.1s; }
+        .clock-card:nth-child(2) { animation-delay: 0.2s; }
+        .clock-card:nth-child(3) { animation-delay: 0.3s; }
+        .clock-card:nth-child(4) { animation-delay: 0.4s; }
+        .clock-card:nth-child(5) { animation-delay: 0.5s; }
+        .clock-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .clock-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .city-name {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .country-name {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .time-display {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .date-display {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .timezone-display {
+            font-size: 0.85em;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .clock-icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .add-clock-section {
+            text-align: center;
+            margin-top: 40px;
+            animation: fadeIn 1s ease-out;
+            animation-delay: 0.8s;
+            animation-fill-mode: both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .add-clock-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .add-clock-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .remove-clock-btn {
+            background: rgba(255, 67, 87, 0.8);
+            backdrop-filter: blur(10px);
             border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .remove-clock-btn:hover {
+            background: rgba(255, 67, 87, 1);
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .timezone-select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            font-size: 1em;
+            margin-bottom: 20px;
             background: white;
             color: #333;
             cursor: pointer;
         }
 
-        .start-button {
-            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
-            color: white;
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border-radius: 25px;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.2em;
-            border-radius: 30px;
+            font-size: 1em;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-        .start-button:hover {
+        .modal-btn.confirm {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .modal-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .game-container {
-            display: none;
-            padding: 20px;
-            flex: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .opponents-area {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .player-area {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            padding: 15px;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .player-area.active {
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
-            transform: scale(1.05);
-            border-color: #ffcc00;
-        }
-
-        .player-name {
-            font-weight: bold;
-            margin-bottom: 10px;
+        .footer {
             text-align: center;
-            font-size: 1.1em;
-        }
-
-        .card-count {
-            text-align: center;
-            font-size: 0.9em;
+            margin-top: 40px;
             opacity: 0.8;
+            font-size: 0.9em;
+            animation: fadeIn 1s ease-out;
+            animation-delay: 1s;
+            animation-fill-mode: both;
         }
 
-        .play-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            margin: 40px 0;
-            min-height: 200px;
-        }
-
-        .deck-pile, .discard-pile {
-            position: relative;
+        .analog-clock {
             width: 120px;
-            height: 180px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .deck-pile {
-            background: linear-gradient(135deg, #333, #555);
-            border: 3px solid #222;
-        }
-
-        .deck-pile:hover {
-            transform: translateY(-5px);
-        }
-
-        .discard-pile {
-            background: #222;
-            border: 3px dashed #555;
-        }
-
-        .current-player-hand {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            margin-top: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            border: 2px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .hand-title {
-            text-align: center;
-            font-size: 1.3em;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        .cards-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            min-height: 180px;
-        }
-
-        .card {
-            width: 80px;
             height: 120px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.5em;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 3px solid white;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-            position: relative;
-            text-transform: uppercase;
-        }
-
-        .card:hover {
-            transform: translateY(-10px) scale(1.1);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-        }
-
-        .card.red { background: linear-gradient(135deg, #ff0000, #cc0000); color: white; border-color: #ff0000; }
-        .card.blue { background: linear-gradient(135deg, #0066ff, #0044cc); color: white; border-color: #0066ff; }
-        .card.green { background: linear-gradient(135deg, #00cc00, #009900); color: white; border-color: #00cc00; }
-        .card.yellow { background: linear-gradient(135deg, #ffcc00, #ff9900); color: #333; border-color: #ffcc00; }
-        .card.wild { 
-            background: linear-gradient(135deg, #ff0000 25%, #0066ff 25% 50%, #00cc00 50% 75%, #ffcc00 75%); 
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-            border-color: #333;
-        }
-
-        .card-number {
-            font-size: 2em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .card-type {
-            font-size: 0.8em;
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            background: rgba(255, 255, 255, 0.3);
-            padding: 2px 6px;
-            border-radius: 5px;
-        }
-
-        .card-back {
-            background: linear-gradient(135deg, #333, #555);
-            color: white;
-            font-size: 1.2em;
-            border: 3px solid #222;
-        }
-
-        .game-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 30px 50px;
-            border-radius: 20px;
-            font-size: 1.5em;
-            text-align: center;
-            z-index: 1000;
-            display: none;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .game-message.show {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-
-        .color-picker {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            padding: 30px;
-            border-radius: 20px;
-            z-index: 1001;
-            display: none;
-            backdrop-filter: blur(10px);
-        }
-
-        .color-picker.show {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        .color-picker-title {
-            text-align: center;
-            font-size: 1.3em;
-            margin-bottom: 20px;
-        }
-
-        .color-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .color-option {
-            width: 80px;
-            height: 80px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            border: 3px solid white;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .color-option:hover {
-            transform: scale(1.1);
-        }
-
-        .color-option.red { background: linear-gradient(135deg, #ff0000, #cc0000); }
-        .color-option.blue { background: linear-gradient(135deg, #0066ff, #0044cc); }
-        .color-option.green { background: linear-gradient(135deg, #00cc00, #009900); }
-        .color-option.yellow { background: linear-gradient(135deg, #ffcc00, #ff9900); }
-
-        .current-color-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 40px;
-            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            position: relative;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
+        .clock-hand {
+            position: absolute;
+            background: white;
+            transform-origin: bottom center;
+            border-radius: 2px;
         }
 
-        .control-button {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
+        .hour-hand {
+            width: 4px;
+            height: 35px;
+            top: 25px;
+            left: 58px;
         }
 
-        .control-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+        .minute-hand {
+            width: 3px;
+            height: 45px;
+            top: 15px;
+            left: 58.5px;
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 50px;
+            top: 10px;
+            left: 59px;
+            background: #ff4757;
+        }
+
+        .clock-center {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            top: 55px;
+            left: 55px;
+            z-index: 10;
         }
 
         @media (max-width: 768px) {
-            .game-title { font-size: 2em; }
-            .card { width: 60px; height: 90px; font-size: 1.2em; }
-            .deck-pile, .discard-pile { width: 90px; height: 135px; }
-            .game-info { flex-direction: column; gap: 10px; }
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            .clock-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .time-display {
+                font-size: 2em;
+            }
+            
+            .city-name {
+                font-size: 1.5em;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="game-header">
-        <div class="game-title">🎮 UNO GAME</div>
-        <div class="game-info">
-            <div class="info-item">Direction: <span id="direction">Clockwise</span></div>
-            <div class="info-item">Current Turn: <span id="current-turn">-</span></div>
-            <div class="current-color-indicator" id="color-indicator"></div>
-        </div>
+    <div class="header">
+        <h1>🌍 World Clock</h1>
+        <div class="subtitle">Time Across the Globe</div>
     </div>
 
-    <div class="game-setup" id="game-setup">
-        <div class="setup-title">🎯 Game Setup</div>
-        <div class="player-select">
-            <label for="player-count">Number of Players:</label>
-            <select id="player-count">
-                <option value="2">2 Players</option>
-                <option value="3">3 Players</option>
-                <option value="4">4 Players</option>
+    <div class="clock-container" id="clockContainer">
+        <!-- Clock cards will be dynamically inserted here -->
+    </div>
+
+    <div class="add-clock-section">
+        <button class="add-clock-btn" onclick="showAddClockModal()">➕ Add Clock</button>
+        <button class="add-clock-btn" onclick="resetToDefaults()">🔄 Reset to Defaults</button>
+    </div>
+
+    <div class="footer">
+        <p>✨ Accurate time zones from around the world</p>
+    </div>
+
+    <div class="modal" id="addClockModal">
+        <div class="modal-content">
+            <h2>Add a New Clock</h2>
+            <select class="timezone-select" id="timezoneSelect">
+                <option value="">Select a city/timezone...</option>
+                <option value="America/New_York">🇺🇸 New York (EST/EDT)</option>
+                <option value="America/Los_Angeles">🇺🇸 Los Angeles (PST/PDT)</option>
+                <option value="America/Chicago">🇺🇸 Chicago (CST/CDT)</option>
+                <option value="Europe/London">🇬🇧 London (GMT/BST)</option>
+                <option value="Europe/Paris">🇫🇷 Paris (CET/CEST)</option>
+                <option value="Europe/Berlin">🇩🇪 Berlin (CET/CEST)</option>
+                <option value="Europe/Moscow">🇷🇺 Moscow (MSK)</option>
+                <option value="Asia/Tokyo">🇯🇵 Tokyo (JST)</option>
+                <option value="Asia/Shanghai">🇨🇳 Shanghai (CST)</option>
+                <option value="Asia/Hong_Kong">🇭🇰 Hong Kong (HKT)</option>
+                <option value="Asia/Singapore">🇸🇬 Singapore (SGT)</option>
+                <option value="Asia/Dubai">🇦🇪 Dubai (GST)</option>
+                <option value="Asia/Kolkata">🇮🇳 Mumbai (IST)</option>
+                <option value="Australia/Sydney">🇦🇺 Sydney (AEDT/AEST)</option>
+                <option value="Australia/Melbourne">🇦🇺 Melbourne (AEDT/AEST)</option>
+                <option value="Pacific/Auckland">🇳🇿 Auckland (NZDT/NZST)</option>
+                <option value="America/Toronto">🇨🇦 Toronto (EST/EDT)</option>
+                <option value="America/Vancouver">🇨🇦 Vancouver (PST/PDT)</option>
+                <option value="America/Mexico_City">🇲🇽 Mexico City (CST/CDT)</option>
+                <option value="America/Sao_Paulo">🇧🇷 São Paulo (BRT)</option>
+                <option value="Africa/Cairo">🇪🇬 Cairo (EET)</option>
+                <option value="Africa/Johannesburg">🇿🇦 Johannesburg (SAST)</option>
+                <option value="Europe/Rome">🇮🇹 Rome (CET/CEST)</option>
+                <option value="Europe/Amsterdam">🇳🇱 Amsterdam (CET/CEST)</option>
+                <option value="Europe/Stockholm">🇸🇪 Stockholm (CET/CEST)</option>
+                <option value="Asia/Seoul">🇰🇷 Seoul (KST)</option>
+                <option value="Asia/Bangkok">🇹🇭 Bangkok (ICT)</option>
+                <option value="Pacific/Honolulu">🇺🇸 Honolulu (HST)</option>
             </select>
-        </div>
-        <button class="start-button" onclick="startGame()">Start Game</button>
-    </div>
-
-    <div class="game-container" id="game-container">
-        <div class="opponents-area" id="opponents-area"></div>
-        
-        <div class="play-area">
-            <div class="deck-pile" onclick="drawCard()">
-                <div>DECK</div>
-                <div style="font-size: 0.8em; margin-top: 5px;" id="deck-count">0</div>
-            </div>
-            <div class="discard-pile" id="discard-pile">
-                <div>DISCARD</div>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="addNewClock()">Add Clock</button>
+                <button class="modal-btn cancel" onclick="hideAddClockModal()">Cancel</button>
             </div>
         </div>
-
-        <div class="current-player-hand" id="current-player-hand">
-            <div class="hand-title" id="hand-title">Your Hand</div>
-            <div class="cards-container" id="cards-container"></div>
-        </div>
-    </div>
-
-    <div class="game-message" id="game-message"></div>
-    
-    <div class="color-picker" id="color-picker">
-        <div class="color-picker-title">Choose a color:</div>
-        <div class="color-options">
-            <div class="color-option red" onclick="chooseColor('red')"></div>
-            <div class="color-option blue" onclick="chooseColor('blue')"></div>
-            <div class="color-option green" onclick="chooseColor('green')"></div>
-            <div class="color-option yellow" onclick="chooseColor('yellow')"></div>
-        </div>
-    </div>
-
-    <div class="controls">
-        <button class="control-button" onclick="showRules()">Rules</button>
-        <button class="control-button" onclick="restartGame()">New Game</button>
     </div>
 
     <script>
-        class UnoGame {
-            constructor() {
-                this.colors = ['red', 'blue', 'green', 'yellow'];
-                this.numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-                this.specialCards = ['Skip', 'Reverse', 'Draw Two'];
-                this.wildCards = ['Wild', 'Wild Draw Four'];
-                this.deck = [];
-                this.discardPile = [];
-                this.players = [];
-                this.currentPlayerIndex = 0;
-                this.direction = 1; // 1 for clockwise, -1 for counter-clockwise
-                this.currentColor = null;
-                this.currentValue = null;
-                this.gameStarted = false;
-                this.waitingForColorChoice = false;
-            }
+        const defaultClocks = [
+            { city: 'New York', country: 'United States', timezone: 'America/New_York', icon: '🗽' },
+            { city: 'London', country: 'United Kingdom', timezone: 'Europe/London', icon: '🇬🇧' },
+            { city: 'Tokyo', country: 'Japan', timezone: 'Asia/Tokyo', icon: '🗾' },
+            { city: 'Sydney', country: 'Australia', timezone: 'Australia/Sydney', icon: '🏖️' },
+            { city: 'Dubai', country: 'UAE', timezone: 'Asia/Dubai', icon: '🏙️' },
+            { city: 'Los Angeles', country: 'United States', timezone: 'America/Los_Angeles', icon: '🌴' }
+        ];
 
-            createDeck() {
-                this.deck = [];
-                
-                // Add number cards (2 of each 1-9, 1 of each 0 per color)
-                for (let color of this.colors) {
-                    this.deck.push({ color, value: '0', type: 'number' });
-                    for (let i = 1; i <= 9; i++) {
-                        this.deck.push({ color, value: i.toString(), type: 'number' });
-                        this.deck.push({ color, value: i.toString(), type: 'number' });
-                    }
-                }
+        let clocks = [...defaultClocks];
+        let updateInterval;
 
-                // Add special cards (2 of each per color)
-                for (let color of this.colors) {
-                    for (let special of this.specialCards) {
-                        this.deck.push({ color, value: special, type: 'special' });
-                        this.deck.push({ color, value: special, type: 'special' });
-                    }
-                }
-
-                // Add wild cards (4 of each)
-                for (let i = 0; i < 4; i++) {
-                    this.deck.push({ color: 'wild', value: 'Wild', type: 'wild' });
-                    this.deck.push({ color: 'wild', value: 'Wild Draw Four', type: 'wild' });
-                }
-
-                this.shuffleDeck();
-            }
-
-            shuffleDeck() {
-                for (let i = this.deck.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+        function initializeClocks() {
+            const savedClocks = localStorage.getItem('worldClocks');
+            if (savedClocks) {
+                try {
+                    clocks = JSON.parse(savedClocks);
+                } catch (e) {
+                    clocks = [...defaultClocks];
                 }
             }
-
-            dealCards(numPlayers) {
-                this.players = [];
-                for (let i = 0; i < numPlayers; i++) {
-                    this.players.push({
-                        name: `Player ${i + 1}`,
-                        cards: [],
-                        isHuman: i === 0 // First player is human
-                    });
-                }
-
-                // Deal 7 cards to each player
-                for (let i = 0; i < 7; i++) {
-                    for (let player of this.players) {
-                        player.cards.push(this.deck.pop());
-                    }
-                }
-
-                // Start discard pile with a non-wild card
-                let firstCard;
-                do {
-                    firstCard = this.deck.pop();
-                } while (firstCard.type === 'wild');
-                
-                this.discardPile.push(firstCard);
-                this.currentColor = firstCard.color;
-                this.currentValue = firstCard.value;
-
-                // Apply initial card effect if it's special
-                if (firstCard.type === 'special') {
-                    this.applySpecialCardEffect(firstCard);
-                }
-            }
-
-            drawCard(playerIndex = this.currentPlayerIndex) {
-                if (this.deck.length === 0) {
-                    this.reshuffleDeck();
-                }
-                
-                if (this.deck.length > 0) {
-                    const card = this.deck.pop();
-                    this.players[playerIndex].cards.push(card);
-                    return card;
-                }
-                return null;
-            }
-
-            reshuffleDeck() {
-                if (this.discardPile.length > 1) {
-                    const topCard = this.discardPile.pop();
-                    this.deck = this.discardPile;
-                    this.discardPile = [topCard];
-                    this.shuffleDeck();
-                }
-            }
-
-            canPlayCard(card) {
-                if (this.waitingForColorChoice) return false;
-                
-                if (card.type === 'wild') return true;
-                if (card.color === this.currentColor) return true;
-                if (card.value === this.currentValue) return true;
-                
-                return false;
-            }
-
-            playCard(playerIndex, cardIndex) {
-                const player = this.players[playerIndex];
-                const card = player.cards[cardIndex];
-
-                if (!this.canPlayCard(card)) {
-                    return false;
-                }
-
-                // Remove card from player's hand and add to discard pile
-                player.cards.splice(cardIndex, 1);
-                this.discardPile.push(card);
-
-                // Update current color and value
-                if (card.type !== 'wild') {
-                    this.currentColor = card.color;
-                    this.currentValue = card.value;
-                }
-
-                // Apply card effects
-                this.applyCardEffect(card);
-
-                // Check for win
-                if (player.cards.length === 0) {
-                    this.endGame(player);
-                    return true;
-                }
-
-                // Check for UNO (1 card left)
-                if (player.cards.length === 1) {
-                    this.showMessage(`${player.name} calls UNO! 🎯`);
-                }
-
-                return true;
-            }
-
-            applyCardEffect(card) {
-                if (card.type === 'special' || card.value === 'Wild Draw Four') {
-                    this.applySpecialCardEffect(card);
-                }
-            }
-
-            applySpecialCardEffect(card) {
-                let nextPlayerIndex = this.getNextPlayerIndex();
-
-                switch (card.value) {
-                    case 'Skip':
-                        this.currentPlayerIndex = nextPlayerIndex;
-                        break;
-                    case 'Reverse':
-                        this.direction *= -1;
-                        if (this.players.length === 2) {
-                            this.currentPlayerIndex = nextPlayerIndex;
-                        }
-                        break;
-                    case 'Draw Two':
-                        for (let i = 0; i < 2; i++) {
-                            this.drawCard(nextPlayerIndex);
-                        }
-                        this.currentPlayerIndex = nextPlayerIndex;
-                        break;
-                    case 'Wild Draw Four':
-                        for (let i = 0; i < 4; i++) {
-                            this.drawCard(nextPlayerIndex);
-                        }
-                        this.currentPlayerIndex = nextPlayerIndex;
-                        break;
-                }
-            }
-
-            getNextPlayerIndex() {
-                let nextIndex = this.currentPlayerIndex + this.direction;
-                if (nextIndex >= this.players.length) nextIndex = 0;
-                if (nextIndex < 0) nextIndex = this.players.length - 1;
-                return nextIndex;
-            }
-
-            nextTurn() {
-                this.currentPlayerIndex = this.getNextPlayerIndex();
-                this.updateDisplay();
-
-                // If next player is AI, make them play
-                if (!this.players[this.currentPlayerIndex].isHuman) {
-                    setTimeout(() => this.makeAIMove(), 1500);
-                }
-            }
-
-            makeAIMove() {
-                const player = this.players[this.currentPlayerIndex];
-                const playableCards = [];
-
-                // Find all playable cards
-                for (let i = 0; i < player.cards.length; i++) {
-                    if (this.canPlayCard(player.cards[i])) {
-                        playableCards.push(i);
-                    }
-                }
-
-                if (playableCards.length > 0) {
-                    // Play a random playable card
-                    const cardIndex = playableCards[Math.floor(Math.random() * playableCards.length)];
-                    const card = player.cards[cardIndex];
-                    
-                    this.playCard(this.currentPlayerIndex, cardIndex);
-                    this.updateDisplay();
-
-                    // If it's a wild card, choose a random color
-                    if (card.type === 'wild') {
-                        const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)];
-                        this.currentColor = randomColor;
-                        this.showMessage(`${player.name} chose ${randomColor}!`);
-                    }
-                } else {
-                    // Draw a card
-                    this.drawCard();
-                    this.showMessage(`${player.name} draws a card`);
-                    
-                    // Check if the drawn card can be played
-                    const drawnCard = player.cards[player.cards.length - 1];
-                    if (this.canPlayCard(drawnCard)) {
-                        setTimeout(() => {
-                            this.playCard(this.currentPlayerIndex, player.cards.length - 1);
-                            this.updateDisplay();
-                            if (drawnCard.type === 'wild') {
-                                const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)];
-                                this.currentColor = randomColor;
-                                this.showMessage(`${player.name} chose ${randomColor}!`);
-                            }
-                            this.nextTurn();
-                        }, 1000);
-                        return;
-                    }
-                }
-
-                setTimeout(() => this.nextTurn(), 1000);
-            }
-
-            updateDisplay() {
-                const currentPlayer = this.players[this.currentPlayerIndex];
-                
-                // Update game info
-                document.getElementById('current-turn').textContent = currentPlayer.name;
-                document.getElementById('direction').textContent = this.direction === 1 ? 'Clockwise' : 'Counter-Clockwise';
-                document.getElementById('deck-count').textContent = this.deck.length;
-                
-                // Update color indicator
-                const colorIndicator = document.getElementById('color-indicator');
-                colorIndicator.style.background = this.getColorGradient(this.currentColor);
-
-                // Update opponents area
-                this.updateOpponentsArea();
-
-                // Update current player hand
-                this.updateCurrentPlayerHand();
-
-                // Update discard pile
-                this.updateDiscardPile();
-            }
-
-            getColorGradient(color) {
-                const gradients = {
-                    'red': 'linear-gradient(135deg, #ff0000, #cc0000)',
-                    'blue': 'linear-gradient(135deg, #0066ff, #0044cc)',
-                    'green': 'linear-gradient(135deg, #00cc00, #009900)',
-                    'yellow': 'linear-gradient(135deg, #ffcc00, #ff9900)',
-                    'wild': 'linear-gradient(135deg, #ff0000 25%, #0066ff 25% 50%, #00cc00 50% 75%, #ffcc00 75%)'
-                };
-                return gradients[color] || gradients['wild'];
-            }
-
-            updateOpponentsArea() {
-                const opponentsArea = document.getElementById('opponents-area');
-                opponentsArea.innerHTML = '';
-
-                for (let i = 0; i < this.players.length; i++) {
-                    const player = this.players[i];
-                    if (!player.isHuman) {
-                        const playerDiv = document.createElement('div');
-                        playerDiv.className = `player-area ${i === this.currentPlayerIndex ? 'active' : ''}`;
-                        playerDiv.innerHTML = `
-                            <div class="player-name">${player.name}</div>
-                            <div class="card-count">${player.cards.length} cards</div>
-                        `;
-                        opponentsArea.appendChild(playerDiv);
-                    }
-                }
-            }
-
-            updateCurrentPlayerHand() {
-                const currentPlayer = this.players[this.currentPlayerIndex];
-                const handTitle = document.getElementById('hand-title');
-                const cardsContainer = document.getElementById('cards-container');
-
-                if (currentPlayer.isHuman) {
-                    handTitle.textContent = 'Your Hand';
-                    cardsContainer.innerHTML = '';
-
-                    currentPlayer.cards.forEach((card, index) => {
-                        const cardDiv = document.createElement('div');
-                        cardDiv.className = `card ${card.color}`;
-                        cardDiv.onclick = () => this.handleCardClick(index);
-
-                        let cardContent = '';
-                        if (card.type === 'number') {
-                            cardContent = `<div class="card-number">${card.value}</div>`;
-                        } else if (card.type === 'special') {
-                            cardContent = `<div style="font-size: 0.7em;">${card.value}</div>`;
-                        } else if (card.type === 'wild') {
-                            cardContent = `<div style="font-size: 0.6em;">${card.value}</div>`;
-                        }
-
-                        cardDiv.innerHTML = cardContent;
-                        cardsContainer.appendChild(cardDiv);
-                    });
-                } else {
-                    handTitle.textContent = `${currentPlayer.name}'s Turn`;
-                    cardsContainer.innerHTML = '<div style="text-align: center; opacity: 0.7;">AI is thinking...</div>';
-                }
-            }
-
-            updateDiscardPile() {
-                const discardPile = document.getElementById('discard-pile');
-                if (this.discardPile.length > 0) {
-                    const topCard = this.discardPile[this.discardPile.length - 1];
-                    discardPile.className = `card ${topCard.color}`;
-                    discardPile.style.width = '120px';
-                    discardPile.style.height = '180px';
-
-                    let cardContent = '';
-                    if (topCard.type === 'number') {
-                        cardContent = `<div class="card-number">${topCard.value}</div>`;
-                    } else if (topCard.type === 'special') {
-                        cardContent = `<div style="font-size: 1em;">${topCard.value}</div>`;
-                    } else if (topCard.type === 'wild') {
-                        cardContent = `<div style="font-size: 0.8em;">${topCard.value}</div>`;
-                    }
-
-                    discardPile.innerHTML = cardContent;
-                }
-            }
-
-            handleCardClick(cardIndex) {
-                if (this.currentPlayerIndex !== 0 || this.waitingForColorChoice) return;
-
-                const card = this.players[0].cards[cardIndex];
-                
-                if (this.canPlayCard(card)) {
-                    this.playCard(0, cardIndex);
-                    this.updateDisplay();
-
-                    if (card.type === 'wild') {
-                        this.showColorPicker();
-                    } else {
-                        this.nextTurn();
-                    }
-                } else {
-                    this.showMessage('You cannot play this card!');
-                }
-            }
-
-            showColorPicker() {
-                this.waitingForColorChoice = true;
-                document.getElementById('color-picker').classList.add('show');
-            }
-
-            chooseColor(color) {
-                this.currentColor = color;
-                this.waitingForColorChoice = false;
-                document.getElementById('color-picker').classList.remove('show');
-                this.showMessage(`Color changed to ${color}!`);
-                this.updateDisplay();
-                this.nextTurn();
-            }
-
-            showMessage(message) {
-                const messageDiv = document.getElementById('game-message');
-                messageDiv.textContent = message;
-                messageDiv.classList.add('show');
-                
-                setTimeout(() => {
-                    messageDiv.classList.remove('show');
-                }, 2000);
-            }
-
-            endGame(winner) {
-                this.gameStarted = false;
-                this.showMessage(`🎉 ${winner.name} wins the game! 🎉`);
-                setTimeout(() => {
-                    if (confirm(`${winner.name} wins! Would you like to play again?`)) {
-                        this.restartGame();
-                    }
-                }, 2500);
-            }
-
-            startGame(numPlayers) {
-                this.createDeck();
-                this.dealCards(numPlayers);
-                this.currentPlayerIndex = 0;
-                this.direction = 1;
-                this.gameStarted = true;
-                this.waitingForColorChoice = false;
-
-                document.getElementById('game-setup').style.display = 'none';
-                document.getElementById('game-container').style.display = 'block';
-
-                this.updateDisplay();
-                this.showMessage('Game started! Your turn!');
-
-                // If first card causes effects that skip human turn, handle it
-                if (this.currentPlayerIndex !== 0) {
-                    setTimeout(() => this.makeAIMove(), 2000);
-                }
-            }
-
-            restartGame() {
-                this.players = [];
-                this.deck = [];
-                this.discardPile = [];
-                this.currentPlayerIndex = 0;
-                this.direction = 1;
-                this.currentColor = null;
-                this.currentValue = null;
-                this.gameStarted = false;
-                this.waitingForColorChoice = false;
-
-                document.getElementById('game-setup').style.display = 'block';
-                document.getElementById('game-container').style.display = 'none';
-                document.getElementById('color-picker').classList.remove('show');
-            }
+            renderClocks();
+            startClockUpdates();
         }
 
-        // Global game instance
-        let game = new UnoGame();
+        function renderClocks() {
+            const container = document.getElementById('clockContainer');
+            container.innerHTML = '';
 
-        // Global functions
-        function startGame() {
-            const playerCount = parseInt(document.getElementById('player-count').value);
-            game.startGame(playerCount);
+            clocks.forEach((clock, index) => {
+                const clockCard = createClockCard(clock, index);
+                container.appendChild(clockCard);
+            });
         }
 
-        function drawCard() {
-            if (!game.gameStarted || game.currentPlayerIndex !== 0 || game.waitingForColorChoice) return;
-
-            game.drawCard(0);
-            game.showMessage('You drew a card');
-            game.updateDisplay();
-
-            // Check if the drawn card can be played
-            const player = game.players[0];
-            const drawnCard = player.cards[player.cards.length - 1];
-            if (!game.canPlayCard(drawnCard)) {
-                setTimeout(() => {
-                    game.nextTurn();
-                }, 1000);
-            }
-        }
-
-        function chooseColor(color) {
-            game.chooseColor(color);
-        }
-
-        function showRules() {
-            const rules = `
-UNO GAME RULES:
-
-🎯 OBJECTIVE: Be the first to play all your cards!
-
-📋 CARD TYPES:
-• Number Cards (0-9): Match by color or number
-• Skip: Next player loses their turn
-• Reverse: Changes direction of play
-• Draw Two: Next player draws 2 cards and loses turn
-• Wild: Change the color to any you choose
-• Wild Draw Four: Change color AND next player draws 4 cards
-
-🎮 HOW TO PLAY:
-1. Match the top card by color, number, or symbol
-2. Wild cards can be played anytime
-3. If you can't play, draw a card
-4. Say "UNO" when you have one card left
-5. First player to empty their hand wins!
-
-💡 TIPS:
-• Save wild cards for strategic moments
-• Pay attention to other players' card counts
-• Use action cards to change the game flow
+        function createClockCard(clock, index) {
+            const card = document.createElement('div');
+            card.className = 'clock-card';
+            card.innerHTML = `
+                <div class="clock-icon">${clock.icon || '🕐'}</div>
+                <div class="city-name">${clock.city}</div>
+                <div class="country-name">${clock.country}</div>
+                <div class="analog-clock" id="analog-${index}">
+                    <div class="clock-hand hour-hand" id="hour-${index}"></div>
+                    <div class="clock-hand minute-hand" id="minute-${index}"></div>
+                    <div class="clock-hand second-hand" id="second-${index}"></div>
+                    <div class="clock-center"></div>
+                </div>
+                <div class="time-display" id="time-${index}">--:--:--</div>
+                <div class="date-display" id="date-${index}">Loading...</div>
+                <div class="timezone-display" id="timezone-${index}">${clock.timezone}</div>
+                ${clock.custom ? `<button class="remove-clock-btn" onclick="removeClock(${index})">Remove</button>` : ''}
             `;
-            alert(rules);
+            return card;
         }
 
-        function restartGame() {
-            if (confirm('Are you sure you want to restart the game?')) {
-                game.restartGame();
+        function updateClocks() {
+            clocks.forEach((clock, index) => {
+                try {
+                    const now = new Date();
+                    const options = {
+                        timeZone: clock.timezone,
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    };
+                    
+                    const timeString = now.toLocaleTimeString('en-US', options);
+                    const dateOptions = {
+                        timeZone: clock.timezone,
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    };
+                    const dateString = now.toLocaleDateString('en-US', dateOptions);
+
+                    const timeElement = document.getElementById(`time-${index}`);
+                    const dateElement = document.getElementById(`date-${index}`);
+                    
+                    if (timeElement) timeElement.textContent = timeString;
+                    if (dateElement) dateElement.textContent = dateString;
+
+                    // Update analog clock
+                    updateAnalogClock(index, clock.timezone);
+                } catch (error) {
+                    console.error(`Error updating clock for ${clock.city}:`, error);
+                }
+            });
+        }
+
+        function updateAnalogClock(index, timezone) {
+            try {
+                const now = new Date();
+                const timeInTimezone = new Date(now.toLocaleString("en-US", {timeZone: timezone}));
+                
+                const hours = timeInTimezone.getHours();
+                const minutes = timeInTimezone.getMinutes();
+                const seconds = timeInTimezone.getSeconds();
+
+                const hourDeg = (hours % 12) * 30 + (minutes / 60) * 30;
+                const minuteDeg = minutes * 6 + (seconds / 60) * 6;
+                const secondDeg = seconds * 6;
+
+                const hourHand = document.getElementById(`hour-${index}`);
+                const minuteHand = document.getElementById(`minute-${index}`);
+                const secondHand = document.getElementById(`second-${index}`);
+
+                if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+                if (minuteHand) minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+                if (secondHand) secondHand.style.transform = `rotate(${secondDeg}deg)`;
+            } catch (error) {
+                console.error(`Error updating analog clock:`, error);
             }
         }
 
-        // Initialize on page load
-        window.onload = function() {
-            // Game is ready to start
-            console.log('UNO Game loaded successfully!');
-        };
+        function startClockUpdates() {
+            updateClocks();
+            updateInterval = setInterval(updateClocks, 1000);
+        }
+
+        function showAddClockModal() {
+            document.getElementById('addClockModal').classList.add('show');
+        }
+
+        function hideAddClockModal() {
+            document.getElementById('addClockModal').classList.remove('show');
+            document.getElementById('timezoneSelect').value = '';
+        }
+
+        function addNewClock() {
+            const select = document.getElementById('timezoneSelect');
+            const selectedValue = select.value;
+            
+            if (!selectedValue) {
+                alert('Please select a timezone from the dropdown.');
+                return;
+            }
+
+            // Check if clock already exists
+            if (clocks.some(clock => clock.timezone === selectedValue)) {
+                alert('This clock is already added.');
+                return;
+            }
+
+            const selectedOption = select.options[select.selectedIndex];
+            const text = selectedOption.text;
+            
+            // Extract city and country from the option text
+            const match = text.match(/(.+) \(.+\)/);
+            const city = match ? match[1].trim() : selectedValue.split('/').pop().replace(/_/g, ' ');
+            
+            const newClock = {
+                city: city,
+                country: 'Custom',
+                timezone: selectedValue,
+                icon: '🌍',
+                custom: true
+            };
+
+            clocks.push(newClock);
+            saveClocks();
+            renderClocks();
+            hideAddClockModal();
+        }
+
+        function removeClock(index) {
+            if (confirm(`Remove ${clocks[index].city} clock?`)) {
+                clocks.splice(index, 1);
+                saveClocks();
+                renderClocks();
+            }
+        }
+
+        function saveClocks() {
+            localStorage.setItem('worldClocks', JSON.stringify(clocks));
+        }
+
+        function resetToDefaults() {
+            if (confirm('Reset to default clocks? This will remove all custom clocks.')) {
+                clocks = [...defaultClocks];
+                saveClocks();
+                renderClocks();
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('addClockModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideAddClockModal();
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeClocks);
     </script>
 </body>
 </html>
